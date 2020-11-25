@@ -98,8 +98,10 @@ function processRequestResults(error, response, body, callback) {
     } else if (!validResponseRegex.test(response.statusCode)) {
       console.error('Bad response code.');
       processedError = response;
-    } 
-    processedError = isHibernating(response)
+    } else if (isHibernating(response)) {
+        processedError = 'Service Now instance is hibernating';    
+    } else processedData = response;
+     
     return callback(processedData, processedError);
 }
 
@@ -142,7 +144,7 @@ function sendRequest(callOptions, callback) {
       uri: uri,
   };
   request(requestOptions, (error, response, body) => {
-    console.log(response)
+    //console.log(response)
     processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
   });
 }
